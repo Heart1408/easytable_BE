@@ -15,4 +15,14 @@ class ChainStore extends Model
         'phone',
         'address',
     ];
+
+    public function staffs()
+    {
+        return $this->hasMany(Staff::class, 'chain_store_id', 'id');
+    }
+
+    public function floors()
+    {
+        return $this->hasMany(Floor::class, 'chain_store_id', 'id');
+    }
 }

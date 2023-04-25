@@ -13,4 +13,9 @@ class TableType extends Model
         'type',
         'number_chair',
     ];
+
+    public function floors()
+    {
+        return $this->belongsToMany(Floor::class, 'table_details', 'table_type_id', 'floor_id')->withPivot('status', 'top', 'left');
+    }
 }

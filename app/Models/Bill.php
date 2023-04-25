@@ -10,9 +10,8 @@ class Bill extends Model
     use HasFactory;
 
     protected $fillable = [
-        'date',
         'booking_id',
-        'table_detail_id',
-        'staff_id',
+        'dish_id',
+        'quantity',
     ];
 }

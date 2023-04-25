@@ -18,4 +18,14 @@ class Staff extends Authenticatable
         'role',
         'chain_store_id',
     ];
+
+    public function chainstore()
+    {
+        return $this->belongsTo(ChainStore::class, 'chain_store_id', 'id');
+    }
+
+    public function bills()
+    {
+        return $this->hasMany(Bill::class);
+    }
 }

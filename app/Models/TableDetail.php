@@ -16,4 +16,9 @@ class TableDetail extends Model
         'left',
         'status',
     ];
+
+    public function floor()
+    {
+        return $this->belongsTo(Floor::class);
+    }
 }

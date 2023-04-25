@@ -36,6 +36,7 @@ class AuthController extends Controller
 
             $response = [
                 'success' => true,
+                'user_info' => $staff,
                 'token' => $token,
             ];
 
@@ -55,7 +56,7 @@ class AuthController extends Controller
         $staff = $request->user();
         $response = [
             'success' => true,
-            'staff' => [
+            'data' => [
                 'id' => $staff->id,
                 'username' => $staff->username,
                 'role'=> $staff->role,

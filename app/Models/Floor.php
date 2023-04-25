@@ -13,4 +13,9 @@ class Floor extends Model
         'chain_store_id',
         'name',
     ];
+
+    public function table_types()
+    {
+        return $this->hasMany(TableDetail::class);
+    }
 }
