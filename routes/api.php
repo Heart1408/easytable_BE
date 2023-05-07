@@ -7,6 +7,10 @@ use App\Http\Controllers\Staff\TableController;
 use App\Http\Controllers\Staff\CustomerController;
 use App\Http\Controllers\Staff\CategoryController;
 use App\Http\Controllers\Staff\ProductController;
+use App\Http\Controllers\Staff\FeedbackController;
+
+use App\Http\Controllers\Customer\BookingController;
+use App\Http\Controllers\Customer\ConfirmController;
 
 /*
 |--------------------------------------------------------------------------
@@ -21,7 +25,7 @@ use App\Http\Controllers\Staff\ProductController;
 
 Route::post('auth/login', [AuthController::class, 'login'])->name('login');
 
-Route::middleware('auth:sanctum')->group(function () {
+Route::middleware(['auth:sanctum', 'role:staff'])->group(function () {
     Route::get('auth/currentStaff', [AuthController::class, 'getCurrentStaff']);
     Route::post('auth/logout', [AuthController::class, 'logout']);
 
@@ -35,6 +39,8 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::get('getlist/{floor_id}', [TableController::class, 'get_list_table']);
         Route::get('getlistfloor', [TableController::class, 'get_list_floor']);
         Route::get('getStatusCurrent/{table_id}', [TableController::class, 'get_status_current']);
+        Route::post('updateStatusBill', [TableController::class, 'update_status_bill']);
+        Route::post('paymentConfirm', [TableController::class, 'payment_confirm']);
     });
 
     Route::group(['prefix' => 'customer'], function () {
@@ -42,13 +48,28 @@ Route::middleware('auth:sanctum')->group(function () {
     });
 
     Route::group(['prefix' => 'category'], function () {
-        Route::get('getlist', [CategoryController::class, 'get_list']);
         Route::post('add', [CategoryController::class, 'add']);
         Route::post('delete/{id}', [CategoryController::class, 'delete']);
         Route::post('edit', [CategoryController::class, 'edit']);
     });
 
     Route::group(['prefix' => 'product'], function () {
-        Route::get('getlist', [ProductController::class, 'get_list']);
+        Route::post('add', [ProductController::class, 'add']);
+    });
+
+    Route::group(['prefix' => 'feedback'], function () {
+        Route::get('getlist', [FeedbackController::class, 'get_list']);
     });
 });
+
+Route::post('customer/login', [ConfirmController::class, 'login']);
+Route::middleware(['auth:sanctum', 'role:customer'])->group(function () {
+    Route::get('customer/booking', [BookingController::class, 'get_booking']);
+    Route::post('customer/addProduct/{dish_id}', [BookingController::class, 'add']);
+    Route::post('customer/deleteProduct/{dish_id}', [BookingController::class, 'delete']);
+    Route::post('customer/confirmOrder', [BookingController::class, 'confirm_order']);
+    Route::post('customer/sendFeedback', [BookingController::class, 'send_feedback']);
+});
+
+Route::get('category/getlist', [CategoryController::class, 'get_list']);
+Route::get('product/getlist', [ProductController::class, 'get_list']);

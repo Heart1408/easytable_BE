@@ -3,12 +3,13 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Model;
+use Illuminate\Foundation\Auth\User as Authenticatable;
+use Laravel\Sanctum\HasApiTokens;
 
-class Customer extends Model
+class Customer extends Authenticatable
 {
-    use HasFactory;
-
+    use HasApiTokens, HasFactory;
+    protected $appends = ['role'];
     protected $fillable = [
         'fullname',
         'phone',
@@ -22,5 +23,8 @@ class Customer extends Model
         return $this->hasMany(Booking::class);
     }
 
-    
+    public function getRoleAttribute()
+    {
+        return 'customer';
+    }
 }

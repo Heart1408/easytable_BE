@@ -39,18 +39,37 @@ class ScheduleRepository
             $customer = $newCustomer->save();
         }
 
-        Booking::create([
-            'customer_id' => $customer->id,
-            'time' => $data['time'],
-            'note' => $data['note'],
-            'table_detail_id' => $data['table_id'],
-            'staff_id' => $staff->id,
-        ]);
+        $existedCustomer = Booking::existedCustomerInSchedule($data['time'], $customer->id);
 
-        return [
-            'success' => true,
-            'message' => "Thêm lịch đặt bàn thành công!",
-        ];
+        if ($existedCustomer) {
+            return [
+                'success' => false,
+                'message' => "Khách hàng đã có lịch đặt bàn!",
+            ];
+        } else {
+            $check = Booking::checkAddSchedule($data['time'], $data['table_id']);
+
+            if ($check) {
+                Booking::create([
+                    'customer_id' => $customer->id,
+                    'time' => $data['time'],
+                    'note' => $data['note'],
+                    'table_detail_id' => $data['table_id'],
+                    'staff_id' => $staff->id,
+                    'status' => Booking::STATUS['not arrived'],
+                ]);
+
+                return [
+                    'success' => true,
+                    'message' => "Thêm lịch đặt bàn thành công!",
+                ];
+            } else {
+                return [
+                    'success' => false,
+                    'message' => "Lịch đặt bàn không hợp lệ!",
+                ];
+            }
+        }
     }
 
     public function delete($data, $chainstore_id)

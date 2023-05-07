@@ -12,6 +12,7 @@ class Staff extends Authenticatable
 
     protected $guarded = array();
 
+    protected $appends = ['role'];
     protected $fillable = [
         'username',
         'password',
@@ -27,5 +28,10 @@ class Staff extends Authenticatable
     public function bills()
     {
         return $this->hasMany(Bill::class);
+    }
+
+    public function getRoleAttribute()
+    {
+        return 'staff';
     }
 }

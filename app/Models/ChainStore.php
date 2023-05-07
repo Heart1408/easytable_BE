@@ -25,4 +25,9 @@ class ChainStore extends Model
     {
         return $this->hasMany(Floor::class, 'chain_store_id', 'id');
     }
+
+    public function dishes()
+    {
+        return $this->belongsToMany(Dish::class, 'status')->withPivot('status');
+    }
 }
