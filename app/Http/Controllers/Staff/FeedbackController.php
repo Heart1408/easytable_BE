@@ -28,4 +28,23 @@ class FeedbackController extends Controller
       ]);
     }
   }
+
+  public function change_status($id)
+  {
+    try {
+      $feedback = Booking::findOrFail($id);
+      $feedback->update(['feedback_status' => Booking::FEEDBACK_STATUS['seen'], 'updated_at' => false]);
+
+      return response()->json([
+        'success' => true,
+        'message' => 'Cập nhật thành công!',
+      ]);
+    } catch (Exception $e) {
+      return response()->json([
+        'status' => 500,
+        'success' => false,
+        'message' => $e->getMessage(),
+      ]);
+    }
+  }
 }

@@ -10,14 +10,15 @@ use Validator;
 
 class AuthController extends Controller
 {
-    public static function staffs() {
+    public static function staffs()
+    {
         return new Staff();
     }
 
     public function login(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'username'    => 'required|string',
+            'username' => 'required|string',
             'password' => 'required|string',
         ]);
         if ($validator->fails()) {
@@ -28,15 +29,19 @@ class AuthController extends Controller
             return response()->json($response, 400);
         }
 
-        $credentials = $request->only('username', 'password');  
+        $credentials = $request->only('username', 'password');
 
         if (Auth::guard('staff')->attempt($credentials)) {
             $staff = Auth::guard('staff')->user();
+            $staff_info['role'] = $staff->role;
+            $staff_info['username'] = $staff->username;
+            $staff_info['fullname'] = $staff->fullname;
+
             $token = $staff->createToken('staff')->plainTextToken;
 
             $response = [
                 'success' => true,
-                'user_info' => $staff,
+                'user_info' => $staff_info,
                 'token' => $token,
             ];
 
@@ -59,8 +64,9 @@ class AuthController extends Controller
             'data' => [
                 'id' => $staff->id,
                 'username' => $staff->username,
-                'role'=> $staff->role,
-                'chain_store_id'=> $staff->chain_store_id,
+                'role' => $staff->role,
+                'chain_store_id' => $staff->chain_store_id,
+                'isAdmin' => $staff->isAdmin(),
             ],
         ];
 

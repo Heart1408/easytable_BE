@@ -11,10 +11,15 @@ class RoleMiddleware
     {
         $user = Auth::user();
 
-        if (!in_array($user->role, $roles)) {
-            return response()->json(['error' => 'Unauthorized'], 401);
+        foreach ($roles as $role) {
+            if ($user->isAdmin() && $role === 'admin') {
+                return $next($request);
+            }
+            if ($role === 'staff') {
+                return $next($request);
+            }
         }
 
-        return $next($request);
+        return response()->json(['success' => false, 'message' => 'Unauthorized'], 403);
     }
 }

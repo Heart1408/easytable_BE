@@ -8,6 +8,7 @@ use App\Http\Controllers\Staff\CustomerController;
 use App\Http\Controllers\Staff\CategoryController;
 use App\Http\Controllers\Staff\ProductController;
 use App\Http\Controllers\Staff\FeedbackController;
+use App\Http\Controllers\Staff\StaffController;
 
 use App\Http\Controllers\Customer\BookingController;
 use App\Http\Controllers\Customer\ConfirmController;
@@ -25,13 +26,35 @@ use App\Http\Controllers\Customer\ConfirmController;
 
 Route::post('auth/login', [AuthController::class, 'login'])->name('login');
 
-Route::middleware(['auth:sanctum', 'role:staff'])->group(function () {
+Route::middleware(['auth:sanctum', 'role:admin'])->group(function () {
     Route::get('auth/currentStaff', [AuthController::class, 'getCurrentStaff']);
+
+    Route::group(['prefix' => 'category'], function () {
+        Route::post('add', [CategoryController::class, 'add']);
+        Route::post('delete/{id}', [CategoryController::class, 'delete']);
+        Route::post('edit', [CategoryController::class, 'edit']);
+    });
+
+    Route::group(['prefix' => 'product'], function () {
+        Route::post('add', [ProductController::class, 'add']);
+        Route::post('delete/{id}', [ProductController::class, 'delete']);
+    });
+
+    Route::group(['prefix' => 'staff'], function () {
+        Route::get('getlist', [StaffController::class, 'get_list']);
+        Route::post('add', [StaffController::class, 'create']);
+        Route::post('edit', [StaffController::class, 'update']);
+        Route::post('delete/{id}', [StaffController::class, 'delete']);
+    });
+});
+
+Route::middleware(['auth:sanctum', 'role:staff'])->group(function () {
     Route::post('auth/logout', [AuthController::class, 'logout']);
 
     Route::group(['prefix' => 'schedule'], function () {
         Route::get('getdata/{date}', [ScheduleController::class, 'get_schedule']);
         Route::post('add', [ScheduleController::class, 'create']);
+        Route::post('update', [ScheduleController::class, 'update']);
         Route::post('delete', [ScheduleController::class, 'delete']);
     });
 
@@ -45,20 +68,13 @@ Route::middleware(['auth:sanctum', 'role:staff'])->group(function () {
 
     Route::group(['prefix' => 'customer'], function () {
         Route::get('getinfo/{booking_id}', [CustomerController::class, 'get_info']);
-    });
-
-    Route::group(['prefix' => 'category'], function () {
-        Route::post('add', [CategoryController::class, 'add']);
-        Route::post('delete/{id}', [CategoryController::class, 'delete']);
-        Route::post('edit', [CategoryController::class, 'edit']);
-    });
-
-    Route::group(['prefix' => 'product'], function () {
-        Route::post('add', [ProductController::class, 'add']);
+        Route::get('getlist', [CustomerController::class, 'get_list']);
+        Route::get('getBookingInfo', [CustomerController::class, 'get_booking_info']);
     });
 
     Route::group(['prefix' => 'feedback'], function () {
         Route::get('getlist', [FeedbackController::class, 'get_list']);
+        Route::post('changestatus/{id}', [FeedbackController::class, 'change_status']);
     });
 });
 

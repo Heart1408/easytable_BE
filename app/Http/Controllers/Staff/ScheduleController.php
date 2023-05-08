@@ -55,6 +55,31 @@ class ScheduleController extends Controller
 
         return response()->json($result);
     }
+
+    public function update(Request $request)
+    {
+        $id = $request->input('id');
+        $data = $request->only([
+            'status',
+            'table_id',
+            'time',
+            'note',
+        ]);
+
+        try {
+            $staff = $request->user();
+            $result = $this->scheduleService->update($data, $staff, $id);
+        } catch (Exception $e) {
+            $result = [
+                'status' => 500,
+                'success' => false,
+                'message' => $e->getMessage(),
+            ];
+        }
+
+        return response()->json($result);
+    }
+
     public function delete(Request $request)
     {
         $booking = $request->only('booking_id');

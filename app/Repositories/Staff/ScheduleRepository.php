@@ -72,6 +72,30 @@ class ScheduleRepository
         }
     }
 
+    public function update($data, $staff, $id)
+    {
+        $check = Booking::checkUpdateSchedule($data['time'], $data['table_id'], $id);
+
+        if ($check) {
+            Booking::findOrFail($id)->update([
+                'time' => $data['time'],
+                'note' => $data['note'],
+                'table_detail_id' => $data['table_id'],
+                'status' => $data['status'],
+            ]);
+
+            return [
+                'success' => true,
+                'message' => "Chỉnh sửa lịch đặt bàn thành công!",
+            ];
+        } else {
+            return [
+                'success' => false,
+                'message' => "Lịch đặt bàn không hợp lệ!",
+            ];
+        }
+    }
+
     public function delete($data, $chainstore_id)
     {
         $booking = Booking::find($data['booking_id']);

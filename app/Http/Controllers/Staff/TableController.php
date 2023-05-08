@@ -25,7 +25,7 @@ class TableController extends Controller
     {
         $chainstore_id = $request->user()->chain_store_id;
         try {
-            $data = Floor::select('id', 'name')->where('chain_store_id', $chainstore_id)->get();
+            $data = Floor::select('id', 'name')->where('chain_store_id', $chainstore_id)->with('tables')->get();
             $result = [
                 'success' => true,
                 'data' => $data,

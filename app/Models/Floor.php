@@ -14,7 +14,7 @@ class Floor extends Model
         'name',
     ];
 
-    public function table_types()
+    public function tables()
     {
         return $this->hasMany(TableDetail::class);
     }

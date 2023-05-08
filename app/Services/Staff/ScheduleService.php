@@ -56,6 +56,35 @@ class ScheduleService
         }
     }
 
+    public function update($data, $staff, $id)
+    {
+        if (!$id) {
+            return [
+                'success' => false,
+                'message' => "Lỗi!",
+            ];
+        }
+
+        $validator = Validator::make($data, [
+            'table_id' => 'required',
+            'time' => 'required',
+            'note' => 'max:1000',
+        ]);
+
+        if ($validator->fails()) {
+            return [
+                'success' => false,
+                'message' => $validator->errors()->first(),
+            ];
+        }
+
+        try {
+            return $this->scheduleRepository->update($data, $staff, $id);
+        } catch (Exception $e) {
+            Log::info($e->getMessage());
+        }
+    }
+
     public function delete($booking, $chainstore_id)
     {
         try {
