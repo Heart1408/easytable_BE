@@ -175,4 +175,40 @@ class TableController extends Controller
             ]);
         }
     }
+
+    public function update_status(Request $request)
+    {
+        try {
+            $table_id = $request->input('table_id');
+            $status = $request->input('status');
+            $table = TableDetail::findOrFail($table_id);
+
+            if ($table->status === TableDetail::STATUS['guests']) {
+                $today = now()->format('Y-m-d');
+                $booking = Booking::where('table_detail_id', $table->id)
+                    ->where('status', Booking::STATUS['arrived'])
+                    ->where(DB::raw('DATE(time)'), $today)->first();
+                if ($booking) {
+                    return response()->json([
+                        'status' => 400,
+                        'success' => false,
+                        'message' => 'Chưa thể cập nhật trạng thái bàn!',
+                    ]);
+                }
+            }
+            $table->update(['status' => $status]);
+
+            return response()->json([
+                'status' => 200,
+                'success' => true,
+                'message' => 'Cập nhật trạng thái bàn thành công!',
+            ]);
+        } catch (Exception $e) {
+            return response()->json([
+                'status' => 500,
+                'success' => false,
+                'message' => $e->getMessage(),
+            ]);
+        }
+    }
 }

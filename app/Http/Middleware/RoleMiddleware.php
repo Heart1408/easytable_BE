@@ -18,6 +18,9 @@ class RoleMiddleware
             if ($role === 'staff') {
                 return $next($request);
             }
+            if ($role === 'customer') {
+                return $next($request);
+            }
         }
 
         return response()->json(['success' => false, 'message' => 'Unauthorized'], 403);

@@ -4,6 +4,7 @@ namespace App\Repositories\Staff;
 
 use App\Models\Customer;
 use App\Models\Booking;
+use App\Models\TableDetail;
 use Illuminate\Support\Facades\DB;
 
 class ScheduleRepository
@@ -77,17 +78,42 @@ class ScheduleRepository
         $check = Booking::checkUpdateSchedule($data['time'], $data['table_id'], $id);
 
         if ($check) {
-            Booking::findOrFail($id)->update([
-                'time' => $data['time'],
-                'note' => $data['note'],
-                'table_detail_id' => $data['table_id'],
-                'status' => $data['status'],
-            ]);
+            if ($data['status'] !== Booking::STATUS['arrived']) {
+                Booking::findOrFail($id)->update([
+                    'time' => $data['time'],
+                    'note' => $data['note'],
+                    'table_detail_id' => $data['table_id'],
+                    'status' => $data['status'],
+                ]);
+
+                return [
+                    'success' => true,
+                    'message' => "Chỉnh sửa lịch đặt bàn thành công!",
+                ];
+            }
+
+            $table_status = TableDetail::findOrFail($data['table_id'])->status;
+            if ($table_status === TableDetail::STATUS['ready']) {
+                Booking::findOrFail($id)->update([
+                    'time' => $data['time'],
+                    'note' => $data['note'],
+                    'table_detail_id' => $data['table_id'],
+                    'status' => $data['status'],
+                ]);
+
+                TableDetail::find($data['table_id'])->update(['status' => TableDetail::STATUS['guests']]);
+
+                return [
+                    'success' => true,
+                    'message' => "Chỉnh sửa lịch đặt bàn thành công!",
+                ];
+            }
 
             return [
-                'success' => true,
-                'message' => "Chỉnh sửa lịch đặt bàn thành công!",
+                'success' => false,
+                'message' => "Trạng thái bàn chưa sẵn sàng!",
             ];
+
         } else {
             return [
                 'success' => false,

@@ -64,6 +64,7 @@ Route::middleware(['auth:sanctum', 'role:staff'])->group(function () {
         Route::get('getStatusCurrent/{table_id}', [TableController::class, 'get_status_current']);
         Route::post('updateStatusBill', [TableController::class, 'update_status_bill']);
         Route::post('paymentConfirm', [TableController::class, 'payment_confirm']);
+        Route::post('updateStatus', [TableController::class, 'update_status']);
     });
 
     Route::group(['prefix' => 'customer'], function () {
@@ -85,6 +86,7 @@ Route::middleware(['auth:sanctum', 'role:customer'])->group(function () {
     Route::post('customer/deleteProduct/{dish_id}', [BookingController::class, 'delete']);
     Route::post('customer/confirmOrder', [BookingController::class, 'confirm_order']);
     Route::post('customer/sendFeedback', [BookingController::class, 'send_feedback']);
+    Route::post('customer/logout', [ConfirmController::class, 'logout']);
 });
 
 Route::get('category/getlist', [CategoryController::class, 'get_list']);

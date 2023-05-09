@@ -64,6 +64,6 @@ class Dish extends Model
             });
         }
 
-        return $query;
+        return $query->orderByDesc('created_at');
     }
 }

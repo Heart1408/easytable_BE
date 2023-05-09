@@ -9,6 +9,8 @@ class TableDetail extends Model
 {
     use HasFactory;
 
+    const STATUS = ['ready' => 1, 'notready' => 2, 'guests' => 3];
+
     protected $fillable = [
         'floor_id',
         'table_type_id',

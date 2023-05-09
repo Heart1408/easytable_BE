@@ -29,6 +29,11 @@ class Customer extends Authenticatable
         return 'customer';
     }
 
+    public function isAdmin()
+    {
+        return false;
+    }
+
     public function scopeSearch($query, $data)
     {
         $chainstore_id = $data['chainstore_id'];
